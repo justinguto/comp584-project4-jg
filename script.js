@@ -1,63 +1,76 @@
-// ====== POKÉAPI FETCH + RENDER ======
-const pokemonGrid = document.getElementById("pokemon-grid");
+// ====== DOM ELEMENTS ======
+const filmsGrid = document.getElementById("films-grid");
 const statusEl = document.getElementById("status");
-const shuffleBtn = document.getElementById("shuffle-btn");
+
 const heroCard = document.getElementById("hero-card");
+const heroTitle = document.getElementById("hero-title");
+const heroDescription = document.getElementById("hero-description");
+const heroMeta = document.getElementById("hero-meta");
 
-// Helper: extract ID from URL like "https://pokeapi.co/api/v2/pokemon/1/"
-function getPokemonIdFromUrl(url) {
-  const parts = url.split("/").filter(Boolean); // removes empty strings
-  return parts[parts.length - 1];
-}
+const randomFilmBtn = document.getElementById("random-film-btn");
+const pulseBtn = document.getElementById("pulse-btn");
 
-async function fetchPokemonList(limit = 12, offset = 0) {
-  statusEl.textContent = "Loading Pokémon...";
+// Store all films once for reuse
+let allFilms = [];
+
+// ====== FETCH FROM STUDIO GHIBLI API ======
+async function fetchFilms() {
+  statusEl.textContent = "Loading Studio Ghibli films...";
   try {
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`);
+    const res = await fetch("https://ghibliapi.vercel.app/films");
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
     const data = await res.json();
-    renderPokemon(data.results);
-    statusEl.textContent = `Showing ${data.results.length} Pokémon.`;
+    allFilms = data;
+    renderFilms(data);
+    setRandomHeroFilm();
+    statusEl.textContent = `Loaded ${data.length} Studio Ghibli films from the public API.`;
   } catch (err) {
     console.error(err);
-    statusEl.textContent = "Failed to load Pokémon. Check console for details.";
+    statusEl.textContent = "Failed to load films. Check the console for details.";
   }
 }
 
-function renderPokemon(pokemonList) {
-  pokemonGrid.innerHTML = "";
-  pokemonList.forEach((p) => {
-    const id = getPokemonIdFromUrl(p.url);
+function renderFilms(films) {
+  filmsGrid.innerHTML = "";
+  films.forEach((film) => {
     const card = document.createElement("article");
-    card.className = "pokemon-card";
+    card.className = "film-card";
 
-    const img = document.createElement("img");
-    img.src =
-      `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
-    img.alt = p.name;
+    const titleEl = document.createElement("h4");
+    titleEl.className = "film-title";
+    titleEl.textContent = film.title;
 
-    const name = document.createElement("h4");
-    name.className = "pokemon-name";
-    name.textContent = p.name;
+    const metaEl = document.createElement("p");
+    metaEl.className = "film-meta";
+    metaEl.textContent = `Director: ${film.director} • Year: ${film.release_date} • Score: ${film.rt_score}`;
 
-    const idLine = document.createElement("p");
-    idLine.className = "pokemon-id";
-    idLine.textContent = `#${id.padStart(3, "0")}`;
+    const descEl = document.createElement("p");
+    descEl.className = "film-description";
+    descEl.textContent = film.description;
 
-    card.appendChild(img);
-    card.appendChild(name);
-    card.appendChild(idLine);
-    pokemonGrid.appendChild(card);
+    card.appendChild(titleEl);
+    card.appendChild(metaEl);
+    card.appendChild(descEl);
+
+    filmsGrid.appendChild(card);
   });
 }
 
-// ====== POPMOTION ANIMATIONS (older library) ======
-const { styler, spring, value, easing } = window.popmotion;
+function setRandomHeroFilm() {
+  if (!allFilms.length) return;
+  const random = allFilms[Math.floor(Math.random() * allFilms.length)];
+  heroTitle.textContent = random.title;
+  heroDescription.textContent = random.description;
+  heroMeta.textContent = `Director: ${random.director}  |  Producer: ${random.producer}  |  Released: ${random.release_date}`;
+}
 
-// Hero card slide-in animation
-function animateHeroIn() {
+// ====== POPMOTION ANIMATIONS ======
+const { styler, spring, keyframes, value, easing } = window.popmotion;
+
+// Hero card entrance animation (spring from above + fade-in)
+function animateHeroEntrance() {
   const heroStyler = styler(heroCard);
   const y = value(-80, (v) => heroStyler.set("y", v));
   const opacity = value(0, (v) => heroStyler.set("opacity", v));
@@ -66,44 +79,44 @@ function animateHeroIn() {
     from: -80,
     to: 0,
     stiffness: 170,
-    damping: 14
+    damping: 16
   }).start(y);
 
   spring({
     from: 0,
     to: 1,
     stiffness: 120,
-    damping: 18
+    damping: 20
   }).start(opacity);
 }
 
-// Button hover animation: subtle scale & glow
-function setupButtonAnimation() {
-  const btnStyler = styler(shuffleBtn);
-  let isHovering = false;
+// Button hover animation: scale + glow on the "Random Film" button
+function setupButtonHover() {
+  const btnStyler = styler(randomFilmBtn);
+  let hover = false;
 
-  shuffleBtn.addEventListener("mouseenter", () => {
-    isHovering = true;
+  randomFilmBtn.addEventListener("mouseenter", () => {
+    hover = true;
     spring({
       from: 1,
       to: 1.07,
-      stiffness: 200,
+      stiffness: 230,
       damping: 15
     }).start((v) => {
-      if (!isHovering) return;
+      if (!hover) return;
       btnStyler.set({
         scale: v,
-        boxShadow: `0 0 30px rgba(255, 204, 0, ${0.6 * (v - 0.9)})`
+        boxShadow: `0 0 32px rgba(250, 204, 21, ${(v - 1) * 6})`
       });
     });
   });
 
-  shuffleBtn.addEventListener("mouseleave", () => {
-    isHovering = false;
+  randomFilmBtn.addEventListener("mouseleave", () => {
+    hover = false;
     spring({
       from: 1.07,
       to: 1,
-      stiffness: 250,
+      stiffness: 260,
       damping: 20
     }).start((v) => {
       btnStyler.set({
@@ -114,40 +127,58 @@ function setupButtonAnimation() {
   });
 }
 
-// Shuffle animation: wiggle cards + refetch different offset
-function setupShuffle() {
-  shuffleBtn.addEventListener("click", () => {
-    const cards = Array.from(document.querySelectorAll(".pokemon-card"));
-    const cardStylers = cards.map((c) => styler(c));
+// Pulse animation for the hero card using keyframes
+function setupPulseAnimation() {
+  const heroStyler = styler(heroCard);
 
-    cardStylers.forEach((s, index) => {
-      spring({
-        from: 0,
-        to: 1,
-        stiffness: 250,
-        damping: 15,
-        mass: 0.9
-      }).start((v) => {
-        const offset = Math.sin(v * Math.PI * 2 + index) * 4;
-        s.set({
-          y: offset,
-          scale: 1 + 0.02 * Math.sin(v * Math.PI + index)
-        });
-      });
+  pulseBtn.addEventListener("click", () => {
+    keyframes({
+      values: [
+        { scale: 1, boxShadow: "0 18px 40px rgba(0, 0, 0, 0.45)" },
+        {
+          scale: 1.03,
+          boxShadow: "0 0 40px rgba(250, 204, 21, 0.7)"
+        },
+        { scale: 1, boxShadow: "0 18px 40px rgba(0, 0, 0, 0.45)" }
+      ],
+      duration: 600,
+      ease: easing.easeInOut,
+      loop: 2
+    }).start((latest) => {
+      heroStyler.set(latest);
     });
+  });
+}
 
-    // After a tiny timeout, load a new “page” of Pokémon
-    const randomOffset = Math.floor(Math.random() * 10) * 12; // multiples of 12
-    setTimeout(() => {
-      fetchPokemonList(12, randomOffset);
-    }, 250);
+// Click handler: random film button
+function setupRandomFilmButton() {
+  randomFilmBtn.addEventListener("click", () => {
+    setRandomHeroFilm();
+    // tiny bounce when changing film
+    const heroStyler = styler(heroCard);
+    spring({
+      from: 1,
+      to: 1.03,
+      stiffness: 250,
+      damping: 18
+    }).start({
+      update: (v) => heroStyler.set("scale", v),
+      complete: () =>
+        spring({
+          from: 1.03,
+          to: 1,
+          stiffness: 260,
+          damping: 20
+        }).start((v) => heroStyler.set("scale", v))
+    });
   });
 }
 
 // ====== INIT ======
 document.addEventListener("DOMContentLoaded", () => {
-  fetchPokemonList();
-  animateHeroIn();
-  setupButtonAnimation();
-  setupShuffle();
+  fetchFilms();          // API requirement
+  animateHeroEntrance(); // Popmotion entrance animation
+  setupButtonHover();    // Popmotion hover animation
+  setupPulseAnimation(); // Popmotion keyframes animation
+  setupRandomFilmButton();
 });
