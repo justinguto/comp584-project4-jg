@@ -1,12 +1,12 @@
 :root {
-  --bg: #050816;
-  --bg-soft: #121826;
-  --accent: #ffcc00;
-  --accent-soft: rgba(255, 204, 0, 0.15);
-  --text: #f5f5f5;
+  --bg: #020617;
+  --bg-soft: #0b1220;
+  --accent: #facc15;
+  --accent-soft: rgba(250, 204, 21, 0.16);
+  --text: #f9fafb;
   --muted: #9ca3af;
-  --card-radius: 16px;
-  --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.35);
+  --card-radius: 18px;
+  --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.45);
 }
 
 *,
@@ -17,11 +17,11 @@
 
 body {
   margin: 0;
+  min-height: 100vh;
   font-family: "Rubik", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
-  background: radial-gradient(circle at top, #1f2937 0, #020617 55%, #000 100%);
+  background: radial-gradient(circle at top, #111827 0, #020617 55%, #000 100%);
   color: var(--text);
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -29,11 +29,11 @@ body {
 /* HEADER */
 .site-header {
   padding: 1rem 2rem;
-  background: linear-gradient(90deg, #111827, #020617);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+  background: linear-gradient(90deg, #020617, #111827);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.4);
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 50;
 }
 
 .logo-title h1 {
@@ -49,32 +49,32 @@ body {
 }
 
 .header-links a {
-  text-decoration: none;
   font-size: 0.85rem;
 }
 
-/* MAIN LAYOUT */
+/* MAIN CONTAINER */
 .container-main {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 2rem 1.25rem 4rem;
+  padding: 2.2rem 1.25rem 3.5rem;
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
 }
 
-/* HERO SECTION: flexbox */
+/* HERO SECTION */
 .hero-section {
   display: flex;
   justify-content: center;
 }
 
 .hero-card {
-  max-width: 640px;
-  padding: 1.75rem 2rem;
-  background: linear-gradient(135deg, #0f172a, #020617);
-  border-radius: 24px;
+  max-width: 720px;
+  width: 100%;
+  padding: 1.8rem 2rem;
+  border-radius: 28px;
+  background: radial-gradient(circle at top left, #1d283a 0, #020617 55%);
   box-shadow: var(--shadow-soft);
   border: 1px solid rgba(148, 163, 184, 0.4);
   position: relative;
@@ -85,85 +85,110 @@ body {
   content: "";
   position: absolute;
   inset: -40%;
-  background: radial-gradient(circle at 10% 0%, rgba(96, 165, 250, 0.12), transparent 60%),
-              radial-gradient(circle at 90% 100%, rgba(251, 191, 36, 0.12), transparent 60%);
-  opacity: 0.7;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.12), transparent 55%),
+    radial-gradient(circle at 100% 100%, rgba(250, 204, 21, 0.18), transparent 55%);
+  opacity: 0.9;
   z-index: -1;
 }
 
-.hero-card h2 {
-  margin-top: 0;
+.hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.18rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(250, 204, 21, 0.55);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
   margin-bottom: 0.5rem;
+}
+
+.hero-card h2 {
+  margin: 0.2rem 0 0.3rem;
   font-size: 1.6rem;
 }
 
 .hero-card p {
-  margin-bottom: 0.75rem;
+  margin: 0.2rem 0 0.6rem;
   color: var(--muted);
 }
 
-.hero-card .btn {
-  margin-top: 0.5rem;
+.hero-meta {
+  font-size: 0.9rem;
+  color: #e5e7eb;
+}
+
+.hero-actions {
+  margin-top: 0.9rem;
 }
 
 .tiny-note {
   font-size: 0.75rem;
   color: var(--muted);
-  margin-top: 0.9rem;
+  margin-top: 1rem;
 }
 
 /* SECTION TITLE */
 .section-title {
-  font-size: 1.3rem;
+  font-size: 1.35rem;
   margin-bottom: 1rem;
 }
 
-/* POKÉMON GRID: CSS GRID */
-.pokemon-grid {
+/* FILMS GRID (CSS GRID) */
+.films-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.2rem;
 }
 
-.pokemon-card {
+.film-card {
   background: var(--bg-soft);
   border-radius: var(--card-radius);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
-  padding: 0.9rem 0.9rem 1rem;
-  border: 1px solid rgba(148, 163, 184, 0.4);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  padding: 1rem 1rem 1.1rem;
+  border: 1px solid rgba(148, 163, 184, 0.45);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  justify-content: space-between;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
 }
 
-.pokemon-card:hover {
+.film-card:hover {
   transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
   border-color: var(--accent);
+  background: radial-gradient(circle at top, rgba(250, 204, 21, 0.12), #020617);
 }
 
-.pokemon-card img {
-  width: 110px;
-  height: 110px;
-  object-fit: contain;
-  margin-bottom: 0.5rem;
-}
-
-.pokemon-name {
-  text-transform: capitalize;
-  margin: 0;
+.film-title {
+  margin: 0 0 0.2rem;
+  font-size: 1.05rem;
   font-weight: 600;
 }
 
-.pokemon-id {
-  font-size: 0.8rem;
+.film-meta {
+  font-size: 0.83rem;
   color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+
+.film-description {
+  font-size: 0.85rem;
+  line-height: 1.35;
+  max-height: 5.4em; /* 4 lines-ish */
+  overflow: hidden;
 }
 
 /* STATUS MESSAGE */
 .status-message {
-  margin-top: 1.25rem;
+  margin-top: 1.1rem;
   font-size: 0.9rem;
   color: var(--muted);
 }
@@ -171,10 +196,10 @@ body {
 /* FOOTER */
 .site-footer {
   text-align: center;
-  padding: 1.5rem 1rem;
+  padding: 1.4rem 1rem;
   font-size: 0.75rem;
   color: var(--muted);
-  border-top: 1px solid rgba(148, 163, 184, 0.3);
+  border-top: 1px solid rgba(148, 163, 184, 0.35);
   background: #020617;
 }
 
@@ -188,15 +213,15 @@ body {
 }
 
 /* RESPONSIVE TWEAKS */
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .site-header {
-    padding: 0.75rem 1rem;
-    flex-direction: column;
+    padding: 0.8rem 1rem;
+    flex-direction: column !important;
     align-items: flex-start !important;
     gap: 0.5rem;
   }
 
   .hero-card {
-    padding: 1.5rem 1.25rem;
+    padding: 1.6rem 1.4rem;
   }
 }
